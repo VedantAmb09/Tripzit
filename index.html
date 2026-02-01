@@ -50,11 +50,77 @@
             margin: 20px auto;
         }
 
+        /* Top Bar with User Profile */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-profile-btn {
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            padding: 8px 16px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-profile-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ios-blue), var(--ios-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .logout-btn {
+            background: rgba(255, 59, 48, 0.2);
+            border: 1px solid rgba(255, 59, 48, 0.4);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.2s;
+            margin-left: 10px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 59, 48, 0.4);
+        }
+
         /* Navigation & Headers */
         .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-top: 70px;
             margin-bottom: 30px;
             color: white;
         }
@@ -65,16 +131,6 @@
             font-weight: 800;
         }
 
-        .user-chip {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 16px;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
         .view-section {
             display: none;
             animation: fadeIn 0.4s ease forwards;
@@ -180,6 +236,7 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
+            margin-top: 70px;
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -193,6 +250,46 @@
             font-weight: 600;
             cursor: pointer;
             backdrop-filter: blur(10px);
+        }
+
+        .planner-header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .planner-title-section {
+            text-align: right;
+        }
+
+        .planner-title-section h2 {
+            color: white;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            margin: 0;
+        }
+
+        .invite-btn {
+            background: linear-gradient(135deg, var(--ios-green), #2ecc71);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .invite-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 199, 89, 0.4);
         }
 
         .delete-trip-btn {
@@ -474,10 +571,99 @@
             transform: scale(1.02);
         }
 
+        /* Invite Modal Specific Styles */
+        .invite-code-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .invite-code-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .invite-code-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 8px;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-code-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .copy-code-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-code-btn.copied {
+            background: var(--ios-green);
+            color: white;
+        }
+
+        .invite-note {
+            background: rgba(0, 122, 255, 0.05);
+            border-left: 4px solid var(--ios-blue);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .invite-note strong {
+            color: var(--ios-blue);
+            display: block;
+            margin-bottom: 5px;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
+            }
+
+            .top-bar {
+                padding: 10px 15px;
+            }
+
+            .user-profile-btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+
+            .logout-btn {
+                padding: 5px 12px;
+                font-size: 0.8rem;
             }
 
             .app-container {
@@ -485,9 +671,7 @@
             }
 
             .main-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+                margin-top: 60px;
             }
 
             .main-header h1 {
@@ -541,6 +725,23 @@
 
             .nav-bar {
                 gap: 15px;
+                margin-top: 60px;
+            }
+
+            .planner-header-right {
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .planner-title-section {
+                text-align: left;
+                width: 100%;
+            }
+
+            .invite-btn {
+                width: 100%;
+                justify-content: center;
             }
 
             .delete-trip-btn {
@@ -555,10 +756,24 @@
             .modal-actions {
                 flex-direction: column;
             }
+
+            .invite-code-value {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Top Bar with User Profile -->
+    <div class="top-bar">
+        <div class="user-profile-btn">
+            <div class="user-avatar" id="user-avatar">U</div>
+            <span id="user-display-name">...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
 
     <div class="app-container">
         
@@ -566,10 +781,6 @@
         <section id="view-dashboard" class="view-section active">
             <div class="main-header">
                 <h1>Tripzit</h1>
-                <div class="user-chip">
-                    <span id="user-display-name">...</span>
-                    <button onclick="logout()" style="border:none; background:none; color:white; cursor:pointer;">Logout</button>
-                </div>
             </div>
 
             <div class="action-grid">
@@ -613,17 +824,23 @@
         <section id="view-planner" class="view-section">
             <div class="nav-bar">
                 <button class="back-btn" onclick="switchView('view-dashboard')">← Back</button>
-                <div style="text-align:right; flex:1;">
-                    <h2 style="color:white; text-shadow: 0 1px 5px rgba(0,0,0,0.2);" id="planner-title">Trip</h2>
-                    <span style="color: rgba(255,255,255,0.8); font-size: 0.9rem;" id="planner-join-code"></span>
+                <div class="planner-header-right">
+                    <div class="planner-title-section">
+                        <h2 id="planner-title">Trip</h2>
+                    </div>
+                    <button class="invite-btn" onclick="window.showInviteModal()">
+                        <span>👥</span> Invite
+                    </button>
                 </div>
-                <button class="delete-trip-btn" onclick="window.deleteTrip()">🗑️ Delete Trip</button>
             </div>
 
             <div class="glass-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center; flex-wrap:wrap; gap:10px;">
                     <h3>Itinerary</h3>
-                    <button class="btn-ios" style="padding:8px 20px; width:auto;" onclick="addDayToTrip()">+ Add Day</button>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-ios" style="padding:8px 20px; width:auto;" onclick="addDayToTrip()">+ Add Day</button>
+                        <button class="delete-trip-btn" style="padding:8px 20px;" onclick="window.deleteTrip()">🗑️ Delete Trip</button>
+                    </div>
                 </div>
 
                 <div id="planner-days-container"></div>
@@ -669,6 +886,31 @@
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
                 <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVITE MODAL -->
+    <div class="modal-overlay" id="inviteModal">
+        <div class="modal-content">
+            <div class="modal-icon">🎉</div>
+            <div class="modal-title">Invite Friends</div>
+            
+            <div class="invite-code-display">
+                <div class="invite-code-label">Your Trip Code</div>
+                <div class="invite-code-value" id="invite-code-display">------</div>
+                <button class="copy-code-btn" id="copy-code-btn" onclick="window.copyInviteCode()">
+                    <span id="copy-icon">📋</span> Copy Code
+                </button>
+            </div>
+
+            <div class="invite-note">
+                <strong>📌 How it works:</strong>
+                Share this code with your trip members so they can join and help distribute the budget. Everyone in the trip can add expenses and track spending together!
+            </div>
+
+            <div class="modal-actions" style="margin-top:20px;">
+                <button class="modal-btn modal-btn-cancel" onclick="closeInviteModal()" style="flex:none; width:100%;">Close</button>
             </div>
         </div>
     </div>
@@ -721,10 +963,66 @@
             document.getElementById('confirmModal').classList.remove('active');
         };
 
-        // Close modal on overlay click
+        window.closeInviteModal = function() {
+            document.getElementById('inviteModal').classList.remove('active');
+            // Reset copy button
+            const copyBtn = document.getElementById('copy-code-btn');
+            copyBtn.classList.remove('copied');
+            copyBtn.innerHTML = '<span id="copy-icon">📋</span> Copy Code';
+        };
+
+        window.showInviteModal = function() {
+            if (!activeTripData) return;
+            
+            const inviteModal = document.getElementById('inviteModal');
+            const codeDisplay = document.getElementById('invite-code-display');
+            
+            codeDisplay.innerText = activeTripData.joinCode;
+            inviteModal.classList.add('active');
+        };
+
+        window.copyInviteCode = async function() {
+            const code = activeTripData.joinCode;
+            const copyBtn = document.getElementById('copy-code-btn');
+            
+            try {
+                await navigator.clipboard.writeText(code);
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<span>✓</span> Copied!';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = '<span id="copy-icon">📋</span> Copy Code';
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<span>✓</span> Copied!';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = '<span id="copy-icon">📋</span> Copy Code';
+                }, 2000);
+            }
+        };
+
+        // Close modals on overlay click
         document.getElementById('confirmModal').addEventListener('click', (e) => {
             if (e.target.id === 'confirmModal') {
                 closeModal();
+            }
+        });
+
+        document.getElementById('inviteModal').addEventListener('click', (e) => {
+            if (e.target.id === 'inviteModal') {
+                closeInviteModal();
             }
         });
 
@@ -734,6 +1032,7 @@
                 const snap = await getDoc(doc(db, "users", user.uid));
                 userProfile = { uid: user.uid, ...snap.data() };
                 document.getElementById('user-display-name').innerText = userProfile.username;
+                document.getElementById('user-avatar').innerText = userProfile.username.charAt(0).toUpperCase();
                 listenToMyTrips();
             } else {
                 window.location.href = "login.html";
@@ -823,9 +1122,6 @@
                         <div class="member-dots">
                             ${data.memberNames.map(n => `<div class="dot">${n[0]}</div>`).join('')}
                         </div>
-                        <div style="position:absolute; bottom:15px; right:20px; font-size:0.7rem; font-weight:bold; color:var(--ios-blue)">
-                            ${data.joinCode}
-                        </div>
                     `;
                     card.onclick = () => openPlanner(d.id);
                     container.appendChild(card);
@@ -875,7 +1171,6 @@
             onSnapshot(doc(db, "trips", id), (snap) => {
                 activeTripData = snap.data();
                 document.getElementById('planner-title').innerText = activeTripData.name;
-                document.getElementById('planner-join-code').innerText = `INVITE: ${activeTripData.joinCode}`;
                 
                 // Listen to Expenses
                 const expQ = query(collection(db, "trips", id, "expenses"), orderBy("createdAt", "asc"));
