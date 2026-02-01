@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tripzit | Access</title>
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --radius-l: 28px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+
+        body {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .login-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            padding: 30px;
+            border-radius: var(--radius-l);
+            width: 100%; max-width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        /* Segmented Control (Tabs) */
+        .tab-container {
+            display: flex;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            flex: 1; padding: 8px; cursor: pointer; border-radius: 10px;
+            font-size: 0.9rem; font-weight: 600; transition: 0.3s; color: #666;
+        }
+
+        .tab.active { background: white; color: var(--ios-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+        h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; color: #1d1d1f; }
+        p { color: #555; margin-bottom: 25px; font-size: 0.9rem; }
+
+        .google-btn {
+            background: white; color: #000; border: none; padding: 16px;
+            border-radius: 16px; font-weight: 600; display: flex;
+            align-items: center; justify-content: center; gap: 12px;
+            width: 100%; cursor: pointer; transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .google-btn:active { transform: scale(0.98); }
+
+        #username-section { display: none; margin-top: 20px; }
+
+        .glass-input {
+            width: 100%; padding: 14px; border: 1.5px solid rgba(0,0,0,0.1);
+            border-radius: 12px; background: white; font-size: 1rem;
+            margin-bottom: 15px; outline: none;
+        }
+
+        .btn-primary {
+            background: var(--ios-blue); color: white; border: none; width: 100%;
+            padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer;
+        }
+
+        .loader {
+            border: 3px solid rgba(0,0,0,0.05); border-top: 3px solid var(--ios-blue);
+            border-radius: 50%; width: 24px; height: 24px;
+            animation: spin 1s linear infinite; display: none; margin: 15px auto;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div id="main-auth-ui">
+            <h1>Tripzit</h1>
+            
+            <div class="tab-container">
+                <div class="tab active" id="tab-signin" onclick="switchMode('signin')">Sign In</div>
+                <div class="tab" id="tab-signup" onclick="switchMode('signup')">Sign Up</div>
+            </div>
+
+            <p id="auth-desc">Welcome back! Sign in to view your trips.</p>
+            
+            <button class="google-btn" id="googleBtn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18" alt="G">
+                <span id="btn-text">Continue with Google</span>
+            </button>
+            <div id="loader" class="loader"></div>
+        </div>
+
+        <div id="username-section">
+            <h2>Create Profile</h2>
+            <p>Pick a username for your Tripzit account.</p>
+            <input type="text" id="username-input" class="glass-input" placeholder="Username">
+            <button class="btn-primary" id="saveUsernameBtn">Complete Sign Up</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db, googleProvider } from "./firebase-config.js";
+        import { signInWithPopup } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+        import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+        let currentMode = 'signin'; // Default mode
+
+        // Handle Tab Switching
+        window.switchMode = (mode) => {
+            currentMode = mode;
+            document.getElementById('tab-signin').classList.toggle('active', mode === 'signin');
+            document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
+            document.getElementById('auth-desc').innerText = mode === 'signin' 
+                ? "Welcome back! Sign in to view your trips." 
+                : "New here? Create an account to start planning.";
+        };
+
+        const googleBtn = document.getElementById('googleBtn');
+        const loader = document.getElementById('loader');
+
+        googleBtn.onclick = async () => {
+            loader.style.display = 'block';
+            googleBtn.style.display = 'none';
+
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+
+                if (currentMode === 'signin') {
+                    if (userSnap.exists()) {
+                        window.location.href = "index.html";
+                    } else {
+                        alert("Account not found. Please Sign Up first!");
+                        loader.style.display = 'none';
+                        googleBtn.style.display = 'flex';
+                    }
+                } else {
+                    // Sign Up Mode
+                    if (userSnap.exists()) {
+                        alert("Account already exists. Redirecting to login...");
+                        window.location.href = "index.html";
+                    } else {
+                        document.getElementById('main-auth-ui').style.display = 'none';
+                        document.getElementById('username-section').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                loader.style.display = 'none';
+                googleBtn.style.display = 'flex';
+            }
+        };
+
+        document.getElementById('saveUsernameBtn').onclick = async () => {
+            const username = document.getElementById('username-input').value.trim();
+            if (username.length < 3) return alert("Username too short");
+
+            const user = auth.currentUser;
+            await setDoc(doc(db, "users", user.uid), {
+                username: username,
+                email: user.email,
+                photoURL: user.photoURL,
+                createdAt: serverTimestamp()
+            });
+            window.location.href = "index.html";
+        };
+    </script>
+</body>
+</html>
