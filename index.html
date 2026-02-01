@@ -6,17 +6,19 @@
     <title>Tripzit | Dashboard</title>
     <style>
         :root {
-            --ios-blue: #007AFF;
-            --ios-red: #FF3B30;
-            --ios-green: #34C759;
-            --ios-orange: #FF9500;
-            --ios-purple: #AF52DE;
-            --ios-gray: #8E8E93;
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-card: rgba(255, 255, 255, 0.45);
-            --glass-border: rgba(255, 255, 255, 0.5);
+            --primary-black: #000000;
+            --secondary-black: #1a1a1a;
+            --tertiary-black: #2d2d2d;
+            --primary-white: #ffffff;
+            --secondary-white: #f5f5f5;
+            --tertiary-white: #e0e0e0;
+            --accent-gray: #666666;
+            --light-gray: #999999;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-card: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(0, 0, 0, 0.1);
             --text-primary: #000000;
-            --text-secondary: #3C3C4399;
+            --text-secondary: #666666;
             --radius-l: 32px;
             --radius-m: 20px;
         }
@@ -30,8 +32,8 @@
         }
 
         body {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 50%, #2d2d2d 100%);
+            background-size: 200% 200%;
             animation: gradientBG 15s ease infinite;
             min-height: 100vh;
             color: var(--text-primary);
@@ -56,27 +58,27 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(20px);
             padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .top-bar-logo {
-            font-size: 1.5rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
             letter-spacing: -0.5px;
         }
 
         .user-profile-btn {
-            background: rgba(255, 255, 255, 0.25);
-            border: 2px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             padding: 8px 16px;
             border-radius: 50px;
             backdrop-filter: blur(10px);
@@ -87,20 +89,20 @@
             transition: 0.2s;
             color: white;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .user-profile-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
         }
 
         .user-avatar {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--ios-blue), var(--ios-purple));
+            background: linear-gradient(135deg, #333, #666);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -110,8 +112,8 @@
         }
 
         .logout-btn {
-            background: rgba(255, 59, 48, 0.2);
-            border: 1px solid rgba(255, 59, 48, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             padding: 6px 14px;
             border-radius: 20px;
@@ -123,7 +125,7 @@
         }
 
         .logout-btn:hover {
-            background: rgba(255, 59, 48, 0.4);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         /* Navigation & Headers */
@@ -135,7 +137,7 @@
 
         .main-header h1 {
             font-size: 2.5rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
             font-weight: 800;
         }
 
@@ -162,8 +164,8 @@
         }
 
         .action-card {
-            background: rgba(255,255,255,0.15);
-            border: 2px dashed white;
+            background: rgba(255,255,255,0.05);
+            border: 2px dashed rgba(255,255,255,0.3);
             border-radius: var(--radius-m);
             padding: 20px;
             text-align: center;
@@ -174,7 +176,8 @@
         }
 
         .action-card:hover {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.5);
         }
 
         /* Trip Grid */
@@ -192,30 +195,37 @@
             cursor: pointer;
             border: 1px solid var(--glass-border);
             position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: 0.3s;
         }
 
         .trip-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
         }
 
         .trip-card h3 {
             font-size: 1.4rem;
             margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .trip-card p {
+            color: var(--text-secondary);
         }
 
         .member-dots {
             display: flex;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
 
         .dot {
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: var(--ios-blue);
+            background: var(--secondary-black);
             color: white;
             display: flex;
             align-items: center;
@@ -223,6 +233,7 @@
             font-size: 0.7rem;
             border: 2px solid white;
             margin-left: -8px;
+            margin-bottom: 5px;
         }
 
         .dot:first-child {
@@ -236,7 +247,7 @@
             border-radius: var(--radius-l);
             padding: 25px;
             border: 1px solid var(--glass-border);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .nav-bar {
@@ -250,14 +261,19 @@
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.3);
-            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 10px 20px;
             border-radius: 20px;
             color: white;
             font-weight: 600;
             cursor: pointer;
             backdrop-filter: blur(10px);
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .planner-header-right {
@@ -274,35 +290,36 @@
 
         .planner-title-section h2 {
             color: white;
-            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            text-shadow: 0 1px 5px rgba(255,255,255,0.2);
             margin: 0;
         }
 
-        .invite-btn {
-            background: linear-gradient(135deg, var(--ios-green), #2ecc71);
-            border: none;
+        .invite-btn, .members-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 12px 24px;
             border-radius: 25px;
-            color: white;
+            color: black;
             font-weight: 700;
             cursor: pointer;
             backdrop-filter: blur(10px);
             transition: 0.2s;
-            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 0.95rem;
         }
 
-        .invite-btn:hover {
+        .invite-btn:hover, .members-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 199, 89, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: white;
         }
 
         .delete-trip-btn {
-            background: rgba(255, 59, 48, 0.8);
-            border: none;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 10px 20px;
             border-radius: 20px;
             color: white;
@@ -313,12 +330,12 @@
         }
 
         .delete-trip-btn:hover {
-            background: var(--ios-red);
+            background: rgba(0, 0, 0, 1);
             transform: scale(1.02);
         }
 
         .day-wrapper {
-            background: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.85);
             border-radius: var(--radius-m);
             margin-bottom: 20px;
             overflow: hidden;
@@ -327,7 +344,7 @@
 
         .day-header {
             padding: 15px 20px;
-            background: rgba(255,255,255,0.3);
+            background: rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -337,7 +354,7 @@
 
         .day-date {
             font-size: 0.85rem;
-            color: var(--ios-gray);
+            color: var(--accent-gray);
             font-weight: 500;
             display: block;
             margin-top: 2px;
@@ -350,9 +367,9 @@
         }
 
         .delete-day-btn {
-            background: rgba(255, 59, 48, 0.1);
-            border: 1px solid rgba(255, 59, 48, 0.3);
-            color: var(--ios-red);
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
             padding: 6px 12px;
             border-radius: 12px;
             font-size: 0.85rem;
@@ -362,7 +379,7 @@
         }
 
         .delete-day-btn:hover {
-            background: rgba(255, 59, 48, 0.2);
+            background: rgba(0, 0, 0, 0.1);
         }
         
         .expense-input-row {
@@ -370,13 +387,13 @@
             grid-template-columns: 2.5fr 1.2fr 1fr 1fr auto;
             gap: 8px;
             padding: 15px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.02);
         }
 
         .glass-input {
             width: 100%;
             padding: 12px;
-            border: none;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 12px;
             background: white;
             font-size: 0.9rem;
@@ -386,7 +403,8 @@
 
         .glass-input:focus {
             outline: none;
-            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.4);
+            border-color: var(--secondary-black);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
         }
 
         .expense-input-row .glass-input {
@@ -410,8 +428,8 @@
         }
 
         .bubble-badge {
-            background: rgba(0, 122, 255, 0.1);
-            color: var(--ios-blue);
+            background: rgba(0, 0, 0, 0.08);
+            color: var(--text-primary);
             padding: 2px 8px;
             border-radius: 10px;
             font-size: 0.75rem;
@@ -435,14 +453,16 @@
             cursor: pointer;
             font-size: 1.2rem;
             padding: 5px;
+            color: var(--text-primary);
         }
 
         .icon-btn.delete:hover {
-            color: var(--ios-red);
+            color: var(--primary-black);
+            font-weight: bold;
         }
         
         .btn-ios {
-            background: var(--ios-blue);
+            background: var(--primary-black);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -454,6 +474,7 @@
 
         .btn-ios:hover {
             transform: scale(1.02);
+            background: var(--secondary-black);
         }
 
         .btn-ios:active {
@@ -461,15 +482,16 @@
         }
 
         .summary-box {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             padding: 25px;
             border-radius: var(--radius-m);
             margin-top: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .settlement-item {
-            color: var(--ios-red);
-            background: rgba(255, 59, 48, 0.05);
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.05);
             padding: 8px 12px;
             border-radius: 10px;
             margin-top: 8px;
@@ -489,7 +511,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
             z-index: 1000;
             animation: fadeIn 0.2s ease;
@@ -508,7 +530,7 @@
             padding: 30px;
             max-width: 400px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             animation: scaleIn 0.3s ease;
         }
 
@@ -570,18 +592,18 @@
         }
 
         .modal-btn-confirm {
-            background: var(--ios-red);
+            background: var(--primary-black);
             color: white;
         }
 
         .modal-btn-confirm:hover {
-            background: #ff1f14;
+            background: var(--secondary-black);
             transform: scale(1.02);
         }
 
         /* Invite Modal Specific Styles */
         .invite-code-display {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2d2d2d 0%, #000000 100%);
             padding: 25px;
             border-radius: 16px;
             margin: 20px 0;
@@ -603,12 +625,12 @@
             color: white;
             letter-spacing: 8px;
             margin-bottom: 15px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
         }
 
         .copy-code-btn {
             background: white;
-            color: #667eea;
+            color: black;
             border: none;
             padding: 12px 30px;
             border-radius: 50px;
@@ -627,13 +649,13 @@
         }
 
         .copy-code-btn.copied {
-            background: var(--ios-green);
+            background: var(--tertiary-black);
             color: white;
         }
 
         .invite-note {
-            background: rgba(0, 122, 255, 0.05);
-            border-left: 4px solid var(--ios-blue);
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-black);
             padding: 15px;
             border-radius: 8px;
             margin-top: 20px;
@@ -643,15 +665,60 @@
         }
 
         .invite-note strong {
-            color: var(--ios-blue);
+            color: var(--primary-black);
             display: block;
             margin-bottom: 5px;
+        }
+
+        /* Members Modal Specific Styles */
+        .members-list {
+            margin: 20px 0;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #333, #666);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .member-joined {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 10px 10px 80px 10px;
             }
 
             .top-bar {
@@ -659,64 +726,81 @@
             }
 
             .top-bar-logo {
-                font-size: 1.3rem;
+                font-size: 1.5rem;
             }
 
             .user-profile-btn {
                 padding: 6px 12px;
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                gap: 6px;
             }
 
             .user-avatar {
                 width: 28px;
                 height: 28px;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
 
             .logout-btn {
-                padding: 5px 12px;
-                font-size: 0.8rem;
+                padding: 4px 10px;
+                font-size: 0.75rem;
+                margin-left: 6px;
             }
 
             .app-container {
                 margin-top: 10px;
+                max-width: 100%;
             }
 
             .main-header {
                 margin-top: 60px;
+                margin-bottom: 20px;
             }
 
             .main-header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .trip-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .trip-card {
+                padding: 20px;
             }
 
             .action-grid {
                 grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .action-card {
+                padding: 18px;
+                font-size: 0.95rem;
+            }
+
+            .glass-panel {
+                padding: 20px;
             }
 
             .expense-input-row {
-                grid-template-columns: 1fr 1fr;
-                grid-template-areas:
-                    "desc desc"
-                    "cat payer"
-                    "amt btn";
+                grid-template-columns: 1fr;
                 gap: 10px;
+                padding: 15px;
             }
 
-            .expense-input-row > :nth-child(1) { grid-area: desc; }
-            .expense-input-row > :nth-child(2) { grid-area: cat; }
-            .expense-input-row > :nth-child(3) { grid-area: payer; }
-            .expense-input-row > :nth-child(4) { grid-area: amt; }
-            .expense-input-row > :nth-child(5) { grid-area: btn; }
+            .expense-input-row > :nth-child(1) { order: 1; }
+            .expense-input-row > :nth-child(2) { order: 2; }
+            .expense-input-row > :nth-child(3) { order: 3; }
+            .expense-input-row > :nth-child(4) { order: 4; }
+            .expense-input-row > :nth-child(5) { order: 5; width: 100%; }
 
             .day-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
+                padding: 12px 15px;
             }
 
             .day-header-actions {
@@ -727,7 +811,12 @@
             .expense-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 8px;
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .expense-details {
+                width: 100%;
             }
 
             .action-row {
@@ -736,13 +825,14 @@
             }
 
             .nav-bar {
-                gap: 15px;
+                gap: 12px;
                 margin-top: 60px;
             }
 
             .planner-header-right {
                 width: 100%;
                 flex-direction: column;
+                align-items: stretch;
                 gap: 10px;
             }
 
@@ -751,9 +841,14 @@
                 width: 100%;
             }
 
-            .invite-btn {
+            .planner-title-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .invite-btn, .members-btn {
                 width: 100%;
                 justify-content: center;
+                padding: 12px 20px;
             }
 
             .delete-trip-btn {
@@ -762,7 +857,8 @@
             }
 
             .modal-content {
-                padding: 25px;
+                padding: 25px 20px;
+                max-width: calc(100% - 40px);
             }
 
             .modal-actions {
@@ -770,8 +866,17 @@
             }
 
             .invite-code-value {
-                font-size: 2rem;
+                font-size: 1.8rem;
                 letter-spacing: 4px;
+            }
+
+            .summary-box {
+                padding: 20px;
+            }
+
+            .btn-ios {
+                padding: 12px 18px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -793,7 +898,7 @@
         <!-- DASHBOARD VIEW -->
         <section id="view-dashboard" class="view-section active">
             <div class="main-header">
-                <h1>Tripzit</h1>
+                <!-- <h1>Tripzit</h1> -->
             </div>
 
             <div class="action-grid">
@@ -807,14 +912,14 @@
         <!-- CREATE TRIP VIEW -->
         <section id="view-create-trip" class="view-section">
             <div class="main-header">
-                <button class="btn-ios" style="background:rgba(255,255,255,0.2)" onclick="switchView('view-dashboard')">← Back</button>
+                <button class="btn-ios" style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="switchView('view-dashboard')">← Back</button>
                 <h1>New Trip</h1>
             </div>
             <div class="glass-panel" style="max-width: 500px; margin: 0 auto;">
-                <label style="display:block; margin-bottom:10px; font-weight:600; color:white;">Trip Destination</label>
+                <label style="display:block; margin-bottom:10px; font-weight:600;">Trip Destination</label>
                 <input type="text" id="new-trip-name" class="glass-input" placeholder="e.g. Goa, Paris">
                 
-                <label style="display:block; margin-bottom:10px; font-weight:600; color:white;">Start Date</label>
+                <label style="display:block; margin-bottom:10px; font-weight:600;">Start Date</label>
                 <input type="date" id="new-trip-date" class="glass-input">
                 
                 <button class="btn-ios" style="width:100%" onclick="handleCreateTrip()">Create Adventure</button>
@@ -824,7 +929,7 @@
         <!-- JOIN TRIP VIEW -->
         <section id="view-join-trip" class="view-section">
             <div class="main-header">
-                <button class="btn-ios" style="background:rgba(255,255,255,0.2)" onclick="switchView('view-dashboard')">← Back</button>
+                <button class="btn-ios" style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="switchView('view-dashboard')">← Back</button>
                 <h1>Join Trip</h1>
             </div>
             <div class="glass-panel" style="max-width: 500px; margin: 0 auto;">
@@ -841,8 +946,11 @@
                     <div class="planner-title-section">
                         <h2 id="planner-title">Trip</h2>
                     </div>
+                    <button class="members-btn" onclick="window.showMembersModal()">
+                        <span>👥</span> Members
+                    </button>
                     <button class="invite-btn" onclick="window.showInviteModal()">
-                        <span>👥</span> Invite
+                        <span>➕</span> Invite
                     </button>
                 </div>
             </div>
@@ -850,7 +958,7 @@
             <div class="glass-panel">
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center; flex-wrap:wrap; gap:10px;">
                     <h3>Itinerary</h3>
-                    <div style="display:flex; gap:10px;">
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
                         <button class="btn-ios" style="padding:8px 20px; width:auto;" onclick="addDayToTrip()">+ Add Day</button>
                         <button class="delete-trip-btn" style="padding:8px 20px;" onclick="window.deleteTrip()">🗑️ Delete Trip</button>
                     </div>
@@ -859,15 +967,15 @@
                 <div id="planner-days-container"></div>
 
                 <div class="summary-box">
-                    <h3 style="margin-bottom:15px; color:var(--ios-gray);">Analytics</h3>
+                    <h3 style="margin-bottom:15px; color:var(--accent-gray);">Analytics</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
                         <div>
-                            <div style="font-size:0.9rem; color:var(--ios-gray);">Total Spent</div>
+                            <div style="font-size:0.9rem; color:var(--accent-gray);">Total Spent</div>
                             <div style="font-size:1.8rem; font-weight:800;" id="planner-total">₹0</div>
                         </div>
                         <div>
-                            <div style="font-size:0.9rem; color:var(--ios-gray);">Per Person</div>
-                            <div style="font-size:1.8rem; font-weight:800; color:var(--ios-blue);" id="planner-per-person">₹0</div>
+                            <div style="font-size:0.9rem; color:var(--accent-gray);">Per Person</div>
+                            <div style="font-size:1.8rem; font-weight:800; color:var(--secondary-black);" id="planner-per-person">₹0</div>
                         </div>
                     </div>
 
@@ -882,7 +990,7 @@
                     </div>
 
                     <div style="margin-top:20px; border-top:1px dashed #ccc; padding-top:15px;">
-                        <h4 style="color:var(--ios-red); margin-bottom:10px; font-weight:600;">Settlements</h4>
+                        <h4 style="color:var(--text-primary); margin-bottom:10px; font-weight:600;">Settlements</h4>
                         <div id="planner-settlements"></div>
                     </div>
                 </div>
@@ -924,6 +1032,22 @@
 
             <div class="modal-actions" style="margin-top:20px;">
                 <button class="modal-btn modal-btn-cancel" onclick="closeInviteModal()" style="flex:none; width:100%;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEMBERS MODAL -->
+    <div class="modal-overlay" id="membersModal">
+        <div class="modal-content">
+            <div class="modal-icon">👥</div>
+            <div class="modal-title">Trip Members</div>
+            
+            <div class="members-list" id="members-list-container">
+                <!-- Members will be populated here -->
+            </div>
+
+            <div class="modal-actions" style="margin-top:20px;">
+                <button class="modal-btn modal-btn-cancel" onclick="closeMembersModal()" style="flex:none; width:100%;">Close</button>
             </div>
         </div>
     </div>
@@ -984,6 +1108,10 @@
             copyBtn.innerHTML = '<span id="copy-icon">📋</span> Copy Code';
         };
 
+        window.closeMembersModal = function() {
+            document.getElementById('membersModal').classList.remove('active');
+        };
+
         window.showInviteModal = function() {
             if (!activeTripData) return;
             
@@ -992,6 +1120,25 @@
             
             codeDisplay.innerText = activeTripData.joinCode;
             inviteModal.classList.add('active');
+        };
+
+        window.showMembersModal = function() {
+            if (!activeTripData) return;
+            
+            const membersModal = document.getElementById('membersModal');
+            const membersContainer = document.getElementById('members-list-container');
+            
+            membersContainer.innerHTML = activeTripData.memberNames.map(name => `
+                <div class="member-item">
+                    <div class="member-avatar">${name.charAt(0).toUpperCase()}</div>
+                    <div class="member-info">
+                        <div class="member-name">${name}</div>
+                        <div class="member-joined">Trip Member</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            membersModal.classList.add('active');
         };
 
         window.copyInviteCode = async function() {
@@ -1036,6 +1183,12 @@
         document.getElementById('inviteModal').addEventListener('click', (e) => {
             if (e.target.id === 'inviteModal') {
                 closeInviteModal();
+            }
+        });
+
+        document.getElementById('membersModal').addEventListener('click', (e) => {
+            if (e.target.id === 'membersModal') {
+                closeMembersModal();
             }
         });
 
@@ -1094,28 +1247,37 @@
 
         window.handleJoinTrip = async () => {
             const code = document.getElementById('join-code-input').value.toUpperCase();
-            const q = query(collection(db, "trips"), where("joinCode", "==", code));
+            if (!code) {
+                alert("Please enter a code");
+                return;
+            }
             
-            onSnapshot(q, async (snap) => {
-                if(snap.empty) return alert("Code not found");
-                
-                const tripDoc = snap.docs[0];
-                const tripData = tripDoc.data();
-                
-                // Check if user is already a member
-                if(tripData.memberUids.includes(userProfile.uid)) {
-                    alert("You're already a member of this trip!");
-                    switchView('view-dashboard');
-                    return;
-                }
-                
-                await updateDoc(doc(db, "trips", tripDoc.id), {
-                    memberUids: arrayUnion(userProfile.uid),
-                    memberNames: arrayUnion(userProfile.username)
-                });
-                
+            const q = query(collection(db, "trips"), where("joinCode", "==", code));
+            const snapshot = await getDocs(q);
+            
+            if(snapshot.empty) {
+                alert("Code not found");
+                return;
+            }
+            
+            const tripDoc = snapshot.docs[0];
+            const tripData = tripDoc.data();
+            
+            // Check if user is already a member
+            if(tripData.memberUids && tripData.memberUids.includes(userProfile.uid)) {
+                alert("You're already a member of this trip!");
                 switchView('view-dashboard');
-            }, { once: true });
+                return;
+            }
+            
+            // Add user to trip
+            await updateDoc(doc(db, "trips", tripDoc.id), {
+                memberUids: arrayUnion(userProfile.uid),
+                memberNames: arrayUnion(userProfile.username)
+            });
+            
+            alert("Successfully joined the trip!");
+            switchView('view-dashboard');
         };
 
         function listenToMyTrips() {
@@ -1277,7 +1439,7 @@
                             <span>${pct}% (₹${amt.toFixed(0)})</span>
                         </div>
                         <div style="background:#eee; height:6px; border-radius:3px; margin-top:2px;">
-                            <div style="background:var(--ios-blue); width:${pct}%; height:100%; border-radius:3px;"></div>
+                            <div style="background:var(--primary-black); width:${pct}%; height:100%; border-radius:3px;"></div>
                         </div>
                     </div>
                 `;
@@ -1296,7 +1458,7 @@
             if (settles.length > 0) {
                 settlementContainer.innerHTML = settles.map(s => `<div class="settlement-item">${s}</div>`).join('');
             } else {
-                settlementContainer.innerHTML = `<div style="color:var(--ios-green); margin-top:10px; font-weight:600;">All settled up!</div>`;
+                settlementContainer.innerHTML = `<div style="color:var(--text-primary); margin-top:10px; font-weight:600;">✓ All settled up!</div>`;
             }
         }
 
