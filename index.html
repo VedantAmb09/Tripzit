@@ -343,27 +343,32 @@
         .day-wrapper {
             background: rgba(255,255,255,0.85);
             border-radius: var(--radius-m);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             overflow: hidden;
             border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
         }
 
         .day-header {
-            padding: 15px 20px;
-            background: rgba(0,0,0,0.05);
+            padding: 20px 25px;
+            background: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: bold;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .day-header:hover {
+            background: rgba(255,255,255,0.8);
         }
 
         .day-date {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--accent-gray);
             font-weight: 500;
             display: block;
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
         .day-header-actions {
@@ -372,28 +377,76 @@
             gap: 15px;
         }
 
-        .delete-day-btn {
-            background: rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            color: var(--text-primary);
+        .day-total-badge {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary-black);
+            background: rgba(0,0,0,0.05);
             padding: 6px 12px;
             border-radius: 12px;
-            font-size: 0.85rem;
+        }
+
+        .toggle-btn {
+            background: var(--primary-black);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .day-wrapper.open .toggle-btn {
+            transform: rotate(180deg);
+        }
+
+        .day-details-container {
+            display: none; /* Hidden by default */
+            padding: 20px;
+            background: rgba(0,0,0,0.02);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            animation: slideDown 0.3s ease;
+        }
+
+        .day-wrapper.open .day-details-container {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delete-day-btn {
+            background: rgba(255, 0, 0, 0.08);
+            border: 1px solid rgba(255, 0, 0, 0.1);
+            color: #d32f2f;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
+            width: 100%;
+            margin-top: 15px;
         }
 
         .delete-day-btn:hover {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(255, 0, 0, 0.15);
         }
         
         .expense-input-row {
             display: grid;
             grid-template-columns: 2.5fr 1.2fr 1fr 1fr auto;
             gap: 8px;
-            padding: 15px;
-            background: rgba(0,0,0,0.02);
+            padding-bottom: 20px;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+            margin-bottom: 15px;
         }
 
         .glass-input {
@@ -420,7 +473,7 @@
         .expense-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 20px;
+            padding: 12px 0;
             border-bottom: 1px solid rgba(0,0,0,0.05);
             align-items: center;
         }
@@ -794,7 +847,6 @@
             .expense-input-row {
                 grid-template-columns: 1fr;
                 gap: 10px;
-                padding: 15px;
             }
 
             .expense-input-row > :nth-child(1) { order: 1; }
@@ -803,23 +855,11 @@
             .expense-input-row > :nth-child(4) { order: 4; }
             .expense-input-row > :nth-child(5) { order: 5; width: 100%; }
 
-            .day-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-                padding: 12px 15px;
-            }
-
-            .day-header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-
             .expense-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
-                padding: 15px;
+                padding: 15px 0;
             }
 
             .expense-details {
@@ -873,7 +913,9 @@
             }
 
             @media (max-width: 400px) {
-             
+                .btn-text {
+                    display: none;
+                }
                 
                 .invite-btn, .members-btn {
                     padding: 12px 16px;
@@ -1094,6 +1136,8 @@
         let userProfile = null;
         let activeTripId = null;
         let activeTripData = null;
+        // Keep track of which days are expanded
+        let expandedDays = new Set();
 
         const CATEGORIES = [
             { id: 'food', icon: '🍔', name: 'Food' },
@@ -1104,37 +1148,42 @@
             { id: 'other', icon: '📦', name: 'Other' }
         ];
 
-        // --- NAVIGATION & HISTORY HANDLING (NEW) ---
-        
-        // 1. Initialize History State for Dashboard on Load
+        // --- NAVIGATION & HISTORY HANDLING ---
         history.replaceState({ view: 'view-dashboard' }, '', window.location.pathname);
 
-        // 2. Modified switchView to handle history
         window.switchView = (id, addToHistory = true) => {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
 
             if (addToHistory) {
                 if (id === 'view-dashboard') {
-                    // Push a new state but cleaned up
                     history.pushState({ view: 'view-dashboard' }, '', window.location.pathname);
                 } else {
-                    // Push a hash state for other views
                     history.pushState({ view: id }, '', `#${id.replace('view-', '')}`);
                 }
             }
         };
 
-        // 3. Listen for Device Back Button
         window.addEventListener('popstate', (event) => {
             if (event.state && event.state.view) {
-                // Navigate without adding to history (since we are moving back)
                 window.switchView(event.state.view, false);
             } else {
-                // Fallback to dashboard if history is empty
                 window.switchView('view-dashboard', false);
             }
         });
+
+        // --- UI TOGGLES ---
+        window.toggleDay = (dayNum) => {
+            const wrapper = document.getElementById(`day-wrapper-${dayNum}`);
+            
+            if (expandedDays.has(dayNum)) {
+                expandedDays.delete(dayNum);
+                wrapper.classList.remove('open');
+            } else {
+                expandedDays.add(dayNum);
+                wrapper.classList.add('open');
+            }
+        };
 
         // --- MODAL FUNCTIONS ---
         function showModal(title, message, icon, onConfirm) {
@@ -1148,7 +1197,6 @@
             modalMessage.innerText = message;
             modalIcon.innerText = icon;
             
-            // Remove old event listeners by cloning the button
             const newConfirmBtn = confirmBtn.cloneNode(true);
             confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
             
@@ -1166,7 +1214,6 @@
 
         window.closeInviteModal = function() {
             document.getElementById('inviteModal').classList.remove('active');
-            // Reset copy button
             const copyBtn = document.getElementById('copy-code-btn');
             copyBtn.classList.remove('copied');
             copyBtn.innerHTML = '<span id="copy-icon">📋</span> Copy Code';
@@ -1191,17 +1238,13 @@
 
         window.showInviteModal = function() {
             if (!activeTripData) return;
-            
             const inviteModal = document.getElementById('inviteModal');
-            const codeDisplay = document.getElementById('invite-code-display');
-            
-            codeDisplay.innerText = activeTripData.joinCode;
+            document.getElementById('invite-code-display').innerText = activeTripData.joinCode;
             inviteModal.classList.add('active');
         };
 
         window.showMembersModal = function() {
             if (!activeTripData) return;
-            
             const membersModal = document.getElementById('membersModal');
             const membersContainer = document.getElementById('members-list-container');
             
@@ -1221,28 +1264,23 @@
         window.copyInviteCode = async function() {
             const code = activeTripData.joinCode;
             const copyBtn = document.getElementById('copy-code-btn');
-            
             try {
                 await navigator.clipboard.writeText(code);
                 copyBtn.classList.add('copied');
                 copyBtn.innerHTML = '<span>✓</span> Copied!';
-                
                 setTimeout(() => {
                     copyBtn.classList.remove('copied');
                     copyBtn.innerHTML = '<span id="copy-icon">📋</span> Copy Code';
                 }, 2000);
             } catch (err) {
-                // Fallback for older browsers
                 const textArea = document.createElement('textarea');
                 textArea.value = code;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                
                 copyBtn.classList.add('copied');
                 copyBtn.innerHTML = '<span>✓</span> Copied!';
-                
                 setTimeout(() => {
                     copyBtn.classList.remove('copied');
                     copyBtn.innerHTML = '<span id="copy-icon">📋</span> Copy Code';
@@ -1250,30 +1288,10 @@
             }
         };
 
-        // Close modals on overlay click
-        document.getElementById('confirmModal').addEventListener('click', (e) => {
-            if (e.target.id === 'confirmModal') {
-                closeModal();
-            }
-        });
-
-        document.getElementById('inviteModal').addEventListener('click', (e) => {
-            if (e.target.id === 'inviteModal') {
-                closeInviteModal();
-            }
-        });
-
-        document.getElementById('membersModal').addEventListener('click', (e) => {
-            if (e.target.id === 'membersModal') {
-                closeMembersModal();
-            }
-        });
-
-        document.getElementById('logoutModal').addEventListener('click', (e) => {
-            if (e.target.id === 'logoutModal') {
-                closeLogoutModal();
-            }
-        });
+        document.getElementById('confirmModal').addEventListener('click', (e) => { if (e.target.id === 'confirmModal') closeModal(); });
+        document.getElementById('inviteModal').addEventListener('click', (e) => { if (e.target.id === 'inviteModal') closeInviteModal(); });
+        document.getElementById('membersModal').addEventListener('click', (e) => { if (e.target.id === 'membersModal') closeMembersModal(); });
+        document.getElementById('logoutModal').addEventListener('click', (e) => { if (e.target.id === 'logoutModal') closeLogoutModal(); });
 
         // --- AUTH ---
         onAuthStateChanged(auth, async (user) => {
@@ -1341,14 +1359,12 @@
             const tripDoc = snapshot.docs[0];
             const tripData = tripDoc.data();
             
-            // Check if user is already a member
             if(tripData.memberUids && tripData.memberUids.includes(userProfile.uid)) {
                 alert("You're already a member of this trip!");
                 switchView('view-dashboard');
                 return;
             }
             
-            // Add user to trip
             await updateDoc(doc(db, "trips", tripDoc.id), {
                 memberUids: arrayUnion(userProfile.uid),
                 memberNames: arrayUnion(userProfile.username)
@@ -1360,11 +1376,9 @@
 
         function listenToMyTrips() {
             const q = query(collection(db, "trips"), where("memberUids", "array-contains", userProfile.uid));
-            
             onSnapshot(q, (snap) => {
                 const container = document.getElementById('trip-list-container');
                 container.innerHTML = '';
-                
                 snap.forEach(d => {
                     const data = d.data();
                     const card = document.createElement('div');
@@ -1385,28 +1399,20 @@
         // --- DELETE TRIP ---
         window.deleteTrip = async () => {
             if (!activeTripId) return;
-            
             showModal(
                 'Delete Trip',
-                `Are you sure you want to delete "${activeTripData.name}"? This will permanently delete the trip and all its expenses. This action cannot be undone.`,
+                `Are you sure you want to delete "${activeTripData.name}"? This will permanently delete the trip and all its expenses.`,
                 '🗑️',
                 async () => {
                     try {
-                        // Delete all expenses in the trip
                         const expensesQuery = query(collection(db, "trips", activeTripId, "expenses"));
                         const expensesSnapshot = await getDocs(expensesQuery);
-                        
                         const deletePromises = expensesSnapshot.docs.map(doc => deleteDoc(doc.ref));
                         await Promise.all(deletePromises);
-                        
-                        // Delete the trip document
                         await deleteDoc(doc(db, "trips", activeTripId));
-                        
-                        // Navigate back to dashboard
                         activeTripId = null;
                         activeTripData = null;
                         switchView('view-dashboard');
-                        
                     } catch (error) {
                         console.error("Error deleting trip:", error);
                         alert("Failed to delete trip. Please try again.");
@@ -1419,13 +1425,13 @@
         async function openPlanner(id) {
             activeTripId = id;
             switchView('view-planner');
+            // Reset expanded days when opening a trip
+            expandedDays = new Set();
             
-            // Listen to Trip Doc
             onSnapshot(doc(db, "trips", id), (snap) => {
                 activeTripData = snap.data();
                 document.getElementById('planner-title').innerText = activeTripData.name;
                 
-                // Listen to Expenses
                 const expQ = query(collection(db, "trips", id, "expenses"), orderBy("createdAt", "asc"));
                 onSnapshot(expQ, (expSnap) => {
                     renderPlannerContent(expSnap.docs.map(d => ({id: d.id, ...d.data()})));
@@ -1474,29 +1480,38 @@
                     `;
                 }).join('');
 
-                // Show delete day button only if there's more than 1 day
                 const showDeleteBtn = activeTripData.dayCount > 1;
+                // Check if this day is expanded
+                const isOpen = expandedDays.has(i) ? 'open' : '';
 
                 container.insertAdjacentHTML('beforeend', `
-                    <div class="day-wrapper">
-                        <div class="day-header">
+                    <div class="day-wrapper ${isOpen}" id="day-wrapper-${i}">
+                        <div class="day-header" onclick="window.toggleDay(${i})">
                             <div>
                                 <strong style="font-size:1.1rem">Day ${i}</strong>
                                 <span class="day-date">${currentDayDate}</span>
                             </div>
                             <div class="day-header-actions">
-                                <div style="font-weight:600;">₹${dayTotal}</div>
-                                ${showDeleteBtn ? `<button class="delete-day-btn" onclick="window.removeDay(${i})">Remove Day</button>` : ''}
+                                <span class="day-total-badge">₹${dayTotal}</span>
+                                <div class="toggle-btn">▼</div>
                             </div>
                         </div>
-                        <div class="expense-input-row">
-                            <input type="text" id="desc-${i}" class="glass-input" placeholder="Item">
-                            <select id="cat-${i}" class="glass-input">${catOptions}</select>
-                            <select id="payer-${i}" class="glass-input">${payerOptions}</select>
-                            <input type="number" id="amt-${i}" class="glass-input" placeholder="₹">
-                            <button class="btn-ios" onclick="window.addExp(${i})">+</button>
+                        
+                        <div class="day-details-container">
+                            <div class="expense-input-row">
+                                <input type="text" id="desc-${i}" class="glass-input" placeholder="Item">
+                                <select id="cat-${i}" class="glass-input">${catOptions}</select>
+                                <select id="payer-${i}" class="glass-input">${payerOptions}</select>
+                                <input type="number" id="amt-${i}" class="glass-input" placeholder="₹">
+                                <button class="btn-ios" onclick="window.addExp(${i})">+</button>
+                            </div>
+                            
+                            <div class="expenses-list">
+                                ${expenseListHTML}
+                            </div>
+
+                            ${showDeleteBtn ? `<button class="delete-day-btn" onclick="window.removeDay(${i})">Remove Day</button>` : ''}
                         </div>
-                        ${expenseListHTML}
                     </div>
                 `);
             }
@@ -1504,7 +1519,7 @@
             document.getElementById('planner-total').innerText = `₹${grandTotal}`;
             document.getElementById('planner-per-person').innerText = `₹${Math.round(grandTotal / activeTripData.memberNames.length)}`;
             
-            // Category Breakdown
+            // Analytics - Unchanged
             const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
             document.getElementById('planner-cat-breakdown').innerHTML = sortedCats.map(([catId, amt]) => {
                 if (amt === 0) return '';
@@ -1523,14 +1538,12 @@
                 `;
             }).join('');
 
-            // Payer Breakdown
             document.getElementById('planner-breakdown').innerHTML = Object.entries(payerTotals).map(([name, amt]) =>
                 `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
                     <span>${name}</span> <strong>₹${amt.toFixed(0)}</strong>
                 </div>`
             ).join('');
             
-            // Settlements
             const settles = calculateSettlements(payerTotals, grandTotal, activeTripData.memberNames);
             const settlementContainer = document.getElementById('planner-settlements');
             if (settles.length > 0) {
@@ -1549,6 +1562,9 @@
             
             if(!desc || !amt) return;
             
+            // Ensure this day stays open when data refreshes
+            expandedDays.add(day);
+            
             await addDoc(collection(db, "trips", activeTripId, "expenses"), {
                 desc,
                 amt,
@@ -1558,20 +1574,14 @@
                 createdAt: serverTimestamp()
             });
 
-            // Clear inputs
             document.getElementById(`desc-${day}`).value = '';
             document.getElementById(`amt-${day}`).value = '';
         };
 
         window.delExp = async (id) => {
-            showModal(
-                'Delete Expense',
-                'Are you sure you want to delete this expense?',
-                '🗑️',
-                async () => {
-                    await deleteDoc(doc(db, "trips", activeTripId, "expenses", id));
-                }
-            );
+            showModal('Delete Expense', 'Are you sure?', '🗑️', async () => {
+                await deleteDoc(doc(db, "trips", activeTripId, "expenses", id));
+            });
         };
 
         window.addDayToTrip = async () => {
@@ -1580,87 +1590,53 @@
             });
         };
 
-        // --- REMOVE DAY ---
         window.removeDay = async (dayNumber) => {
             if (!activeTripId || activeTripData.dayCount <= 1) return;
             
-            // Check if the day has any expenses
-            const expensesQuery = query(
-                collection(db, "trips", activeTripId, "expenses"),
-                where("day", "==", dayNumber)
-            );
+            const expensesQuery = query(collection(db, "trips", activeTripId, "expenses"), where("day", "==", dayNumber));
             const expensesSnapshot = await getDocs(expensesQuery);
             
             if (!expensesSnapshot.empty) {
-                showModal(
-                    'Cannot Remove Day',
-                    `Day ${dayNumber} has expenses. Please delete all expenses before removing this day.`,
-                    '⚠️',
-                    () => {} // No action needed, just close modal
-                );
+                showModal('Cannot Remove Day', `Day ${dayNumber} has expenses. Delete them first.`, '⚠️', () => {});
                 return;
             }
             
-            showModal(
-                'Remove Day',
-                `Remove Day ${dayNumber}? Days after this will be renumbered.`,
-                '📅',
-                async () => {
-                    try {
-                        // Get all expenses to renumber
-                        const allExpensesQuery = query(collection(db, "trips", activeTripId, "expenses"));
-                        const allExpensesSnapshot = await getDocs(allExpensesQuery);
-                        
-                        // Update day numbers for expenses after the removed day
-                        const updatePromises = allExpensesSnapshot.docs
-                            .filter(doc => doc.data().day > dayNumber)
-                            .map(doc => updateDoc(doc.ref, { day: doc.data().day - 1 }));
-                        
-                        await Promise.all(updatePromises);
-                        
-                        // Decrease day count
-                        await updateDoc(doc(db, "trips", activeTripId), {
-                            dayCount: activeTripData.dayCount - 1
-                        });
-                        
-                    } catch (error) {
-                        console.error("Error removing day:", error);
-                        alert("Failed to remove day. Please try again.");
-                    }
+            showModal('Remove Day', `Remove Day ${dayNumber}?`, '📅', async () => {
+                try {
+                    const allExpensesQuery = query(collection(db, "trips", activeTripId, "expenses"));
+                    const allExpensesSnapshot = await getDocs(allExpensesQuery);
+                    
+                    const updatePromises = allExpensesSnapshot.docs
+                        .filter(doc => doc.data().day > dayNumber)
+                        .map(doc => updateDoc(doc.ref, { day: doc.data().day - 1 }));
+                    
+                    await Promise.all(updatePromises);
+                    await updateDoc(doc(db, "trips", activeTripId), { dayCount: activeTripData.dayCount - 1 });
+                    
+                } catch (error) {
+                    console.error("Error removing day:", error);
                 }
-            );
+            });
         };
 
-        // --- MATH ---
         function calculateSettlements(payerTotals, total, travelers) {
             if (total === 0 || travelers.length === 0) return [];
-            
             const avg = total / travelers.length;
-            let bal = travelers.map(t => ({
-                name: t,
-                amt: (payerTotals[t] || 0) - avg
-            }));
-            
+            let bal = travelers.map(t => ({ name: t, amt: (payerTotals[t] || 0) - avg }));
             let debtors = bal.filter(x => x.amt < -0.1).sort((a,b) => a.amt - b.amt);
             let creditors = bal.filter(x => x.amt > 0.1).sort((a,b) => b.amt - a.amt);
-            
             let results = [];
             let i = 0, j = 0;
-            
             while(i < debtors.length && j < creditors.length) {
                 let pay = Math.min(Math.abs(debtors[i].amt), creditors[j].amt);
                 results.push(`${debtors[i].name} owes ${creditors[j].name} ₹${Math.round(pay)}`);
-                
                 debtors[i].amt += pay;
                 creditors[j].amt -= pay;
-                
                 if(Math.abs(debtors[i].amt) < 0.1) i++;
                 if(creditors[j].amt < 0.1) j++;
             }
-            
             return results;
         }
     </script>
 </body>
 </html>
-
