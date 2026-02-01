@@ -60,10 +60,18 @@
             backdrop-filter: blur(20px);
             padding: 12px 20px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             z-index: 100;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .top-bar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.5px;
         }
 
         .user-profile-btn {
@@ -650,6 +658,10 @@
                 padding: 10px 15px;
             }
 
+            .top-bar-logo {
+                font-size: 1.3rem;
+            }
+
             .user-profile-btn {
                 padding: 6px 12px;
                 font-size: 0.9rem;
@@ -768,6 +780,7 @@
 
     <!-- Top Bar with User Profile -->
     <div class="top-bar">
+        <div class="top-bar-logo">Tripzit</div>
         <div class="user-profile-btn">
             <div class="user-avatar" id="user-avatar">U</div>
             <span id="user-display-name">...</span>
