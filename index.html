@@ -837,6 +837,7 @@
                 flex-direction: column;
             }
 
+            /* IMPORTANT: Hide Back Button on Mobile to force Physical Back Button Usage */
             .back-btn {
                 display: none;
             }
@@ -905,11 +906,9 @@
             }
         }
     </style>
-    <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
 <body>
 
-    <!-- Top Bar with User Profile -->
     <div class="top-bar">
         <div class="top-bar-logo">Tripzit</div>
         <div class="user-profile-btn">
@@ -921,11 +920,9 @@
 
     <div class="app-container">
         
-        <!-- DASHBOARD VIEW -->
         <section id="view-dashboard" class="view-section active">
             <div class="main-header">
-                <!-- <h1>Tripzit</h1> -->
-            </div>
+                </div>
 
             <div class="action-grid">
                 <div class="action-card" onclick="switchView('view-create-trip')">＋ Create Trip</div>
@@ -935,7 +932,6 @@
             <div class="trip-grid" id="trip-list-container"></div>
         </section>
 
-        <!-- CREATE TRIP VIEW -->
         <section id="view-create-trip" class="view-section">
             <div class="main-header">
                 <button class="btn-ios" style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="switchView('view-dashboard')">← Back</button>
@@ -952,7 +948,6 @@
             </div>
         </section>
 
-        <!-- JOIN TRIP VIEW -->
         <section id="view-join-trip" class="view-section">
             <div class="main-header">
                 <button class="btn-ios" style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="switchView('view-dashboard')">← Back</button>
@@ -964,7 +959,6 @@
             </div>
         </section>
 
-        <!-- PLANNER VIEW -->
         <section id="view-planner" class="view-section">
             <div class="nav-bar">
                 <button class="back-btn" onclick="switchView('view-dashboard')">← Back</button>
@@ -1030,7 +1024,6 @@
         </section>
     </div>
 
-    <!-- CONFIRMATION MODAL -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-content">
             <div class="modal-icon" id="modalIcon">⚠️</div>
@@ -1043,7 +1036,6 @@
         </div>
     </div>
 
-    <!-- INVITE MODAL -->
     <div class="modal-overlay" id="inviteModal">
         <div class="modal-content">
             <div class="modal-icon">🎉</div>
@@ -1068,15 +1060,13 @@
         </div>
     </div>
 
-    <!-- MEMBERS MODAL -->
     <div class="modal-overlay" id="membersModal">
         <div class="modal-content">
             <div class="modal-icon">👥</div>
             <div class="modal-title">Trip Members</div>
             
             <div class="members-list" id="members-list-container">
-                <!-- Members will be populated here -->
-            </div>
+                </div>
 
             <div class="modal-actions" style="margin-top:20px;">
                 <button class="modal-btn modal-btn-cancel" onclick="closeMembersModal()" style="flex:none; width:100%;">Close</button>
@@ -1084,7 +1074,6 @@
         </div>
     </div>
 
-    <!-- LOGOUT CONFIRMATION MODAL -->
     <div class="modal-overlay" id="logoutModal">
         <div class="modal-content">
             <div class="modal-icon">👋</div>
@@ -1116,6 +1105,38 @@
             { id: 'shop', icon: '🛒', name: 'Shopping' },
             { id: 'other', icon: '📦', name: 'Other' }
         ];
+
+        // --- NAVIGATION & HISTORY HANDLING (NEW) ---
+        
+        // 1. Initialize History State for Dashboard on Load
+        history.replaceState({ view: 'view-dashboard' }, '', window.location.pathname);
+
+        // 2. Modified switchView to handle history
+        window.switchView = (id, addToHistory = true) => {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            if (addToHistory) {
+                if (id === 'view-dashboard') {
+                    // Push a new state but cleaned up
+                    history.pushState({ view: 'view-dashboard' }, '', window.location.pathname);
+                } else {
+                    // Push a hash state for other views
+                    history.pushState({ view: id }, '', `#${id.replace('view-', '')}`);
+                }
+            }
+        };
+
+        // 3. Listen for Device Back Button
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.view) {
+                // Navigate without adding to history (since we are moving back)
+                window.switchView(event.state.view, false);
+            } else {
+                // Fallback to dashboard if history is empty
+                window.switchView('view-dashboard', false);
+            }
+        });
 
         // --- MODAL FUNCTIONS ---
         function showModal(title, message, icon, onConfirm) {
@@ -1271,13 +1292,6 @@
 
         window.logout = () => signOut(auth);
         
-        window.logout = () => signOut(auth);
-        
-        window.switchView = (id) => {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        };
-
         // --- UTILITY FUNCTIONS ---
         function formatDate(dateStr) {
             const options = { month: 'short', day: 'numeric', weekday: 'short' };
