@@ -205,10 +205,35 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
         }
 
+        /* New Delete Button Style for Cards */
+        .trip-delete-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            transition: 0.2s;
+            z-index: 10;
+        }
+
+        .trip-delete-icon:hover {
+            background: #ffdede;
+            color: #d32f2f;
+            transform: scale(1.1);
+        }
+
         .trip-card h3 {
             font-size: 1.4rem;
             margin-bottom: 5px;
             color: var(--text-primary);
+            padding-right: 30px; /* Space for delete button */
         }
 
         .trip-card p {
@@ -321,23 +346,6 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
             background: white;
-        }
-
-        .delete-trip-btn {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: 0.2s;
-        }
-
-        .delete-trip-btn:hover {
-            background: rgba(0, 0, 0, 1);
-            transform: scale(1.02);
         }
 
         .day-wrapper {
@@ -907,14 +915,7 @@
                 display: inline;
             }
 
-            .delete-trip-btn {
-                width: 100%;
-                margin-top: 10px;
-            }
-
             @media (max-width: 400px) {
-        
-                
                 .invite-btn, .members-btn {
                     padding: 12px 16px;
                 }
@@ -1020,7 +1021,6 @@
                     </div>
                     <div style="display:flex; gap:10px; flex-wrap:wrap;">
                         <button class="btn-ios" style="padding:8px 20px; width:auto;" onclick="addDayToTrip()">+ Add Day</button>
-                        <button class="delete-trip-btn" style="padding:8px 20px;" onclick="window.deleteTrip()">🗑️ Delete Trip</button>
                     </div>
                 </div>
 
@@ -1136,6 +1136,7 @@
         let activeTripData = null;
         // Keep track of which days are expanded
         let expandedDays = new Set();
+        let tripToDeleteId = null;
 
         const CATEGORIES = [
             { id: 'food', icon: '🍔', name: 'Food' },
@@ -1208,6 +1209,7 @@
 
         window.closeModal = function() {
             document.getElementById('confirmModal').classList.remove('active');
+            tripToDeleteId = null;
         };
 
         window.closeInviteModal = function() {
@@ -1381,42 +1383,62 @@
                     const data = d.data();
                     const card = document.createElement('div');
                     card.className = 'trip-card';
+                    // We render the delete button (x) directly here
                     card.innerHTML = `
+                        <div class="trip-delete-icon" onclick="window.promptDeleteTrip('${d.id}', '${data.name}', event)">×</div>
                         <h3>${data.name}</h3>
                         <p>${formatDate(data.startDate)}</p>
                         <div class="member-dots">
                             ${data.memberNames.map(n => `<div class="dot">${n[0]}</div>`).join('')}
                         </div>
                     `;
-                    card.onclick = () => openPlanner(d.id);
+                    card.onclick = (e) => {
+                        // Ensure clicking the card body opens the planner, but not if we clicked the delete button
+                        // The propagation stop in promptDeleteTrip handles the specific button click,
+                        // but this check is a safety fallback.
+                        if(!e.target.classList.contains('trip-delete-icon')) {
+                            openPlanner(d.id);
+                        }
+                    };
                     container.appendChild(card);
                 });
             });
         }
 
         // --- DELETE TRIP ---
-        window.deleteTrip = async () => {
-            if (!activeTripId) return;
+        window.promptDeleteTrip = (id, name, event) => {
+            event.stopPropagation(); // Stop the card click from opening the planner
+            tripToDeleteId = id;
             showModal(
                 'Delete Trip',
-                `Are you sure you want to delete "${activeTripData.name}"? This will permanently delete the trip and all its expenses.`,
+                `Are you sure you want to delete "${name}"? This will permanently delete the trip and all its expenses.`,
                 '🗑️',
-                async () => {
-                    try {
-                        const expensesQuery = query(collection(db, "trips", activeTripId, "expenses"));
-                        const expensesSnapshot = await getDocs(expensesQuery);
-                        const deletePromises = expensesSnapshot.docs.map(doc => deleteDoc(doc.ref));
-                        await Promise.all(deletePromises);
-                        await deleteDoc(doc(db, "trips", activeTripId));
-                        activeTripId = null;
-                        activeTripData = null;
-                        switchView('view-dashboard');
-                    } catch (error) {
-                        console.error("Error deleting trip:", error);
-                        alert("Failed to delete trip. Please try again.");
-                    }
-                }
+                executeDeleteTrip
             );
+        };
+
+        const executeDeleteTrip = async () => {
+            if (!tripToDeleteId) return;
+            
+            try {
+                const expensesQuery = query(collection(db, "trips", tripToDeleteId, "expenses"));
+                const expensesSnapshot = await getDocs(expensesQuery);
+                const deletePromises = expensesSnapshot.docs.map(doc => deleteDoc(doc.ref));
+                await Promise.all(deletePromises);
+                await deleteDoc(doc(db, "trips", tripToDeleteId));
+                
+                // Reset state
+                tripToDeleteId = null;
+                // If we were somehow in the view of the deleted trip, go back
+                if(activeTripId === tripToDeleteId) {
+                    activeTripId = null;
+                    activeTripData = null;
+                    switchView('view-dashboard');
+                }
+            } catch (error) {
+                console.error("Error deleting trip:", error);
+                alert("Failed to delete trip. Please try again.");
+            }
         };
 
         // --- PLANNER LOGIC ---
@@ -1427,6 +1449,11 @@
             expandedDays = new Set();
             
             onSnapshot(doc(db, "trips", id), (snap) => {
+                // Check if trip still exists (in case it was deleted by someone else)
+                if(!snap.exists()) {
+                    switchView('view-dashboard');
+                    return;
+                }
                 activeTripData = snap.data();
                 document.getElementById('planner-title').innerText = activeTripData.name;
                 
@@ -1638,4 +1665,3 @@
     </script>
 </body>
 </html>
-
