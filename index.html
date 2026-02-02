@@ -996,9 +996,113 @@
                 font-size: 0.9rem;
             }
         }
-    </style>
-</head>
+        /* --- Standard Trip Card CSS --- */
 
+.trip-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    padding: 24px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.trip-card:hover {
+    transform: translateY(-5px);
+    background: #ffffff;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.trip-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000000;
+    margin: 0 0 5px 0;
+    padding-right: 40px; /* Space for delete button */
+}
+
+.trip-card p {
+    font-size: 0.9rem;
+    color: #666666;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Total Amount Styling */
+.trip-card-total {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
+    color: #444;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.trip-card-total span {
+    color: #000000;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+/* Delete Button styling */
+.trip-delete-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: 0.2s;
+    font-size: 1.2rem;
+    line-height: 1;
+    z-index: 10;
+}
+
+.trip-delete-icon:hover {
+    background: #ffdede;
+    color: #d32f2f;
+    transform: scale(1.1);
+}
+
+/* Member Avatars */
+.member-dots {
+    margin-top: 15px;
+    display: flex;
+}
+
+.dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #333;
+    color: white;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: -8px;
+}
+
+.dot:first-child {
+    margin-left: 0;
+}
+    </style>
+     <!-- <link rel="stylesheet" href="style.css"> -->
+</head>
 <body>
 
     <div class="top-bar">
@@ -1011,7 +1115,7 @@
     </div>
 
     <div class="app-container">
-
+        
         <section id="view-dashboard" class="view-section active">
             <div class="main-header">
             </div>
@@ -1026,32 +1130,27 @@
 
         <section id="view-create-trip" class="view-section">
             <div class="main-header">
-                <button class="btn-ios"
-                    style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);"
-                    onclick="switchView('view-dashboard')">← Back</button>
+                <button class="btn-ios" style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="switchView('view-dashboard')">← Back</button>
                 <h1>New Trip</h1>
             </div>
             <div class="glass-panel" style="max-width: 500px; margin: 0 auto;">
                 <label style="display:block; margin-bottom:10px; font-weight:600;">Trip Destination</label>
                 <input type="text" id="new-trip-name" class="glass-input" placeholder="e.g. Goa, Paris">
-
+                
                 <label style="display:block; margin-bottom:10px; font-weight:600;">Start Date</label>
                 <input type="date" id="new-trip-date" class="glass-input">
-
+                
                 <button class="btn-ios" style="width:100%" onclick="handleCreateTrip()">Create Adventure</button>
             </div>
         </section>
 
         <section id="view-join-trip" class="view-section">
             <div class="main-header">
-                <button class="btn-ios"
-                    style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);"
-                    onclick="switchView('view-dashboard')">← Back</button>
+                <button class="btn-ios" style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="switchView('view-dashboard')">← Back</button>
                 <h1>Join Trip</h1>
             </div>
             <div class="glass-panel" style="max-width: 500px; margin: 0 auto;">
-                <input type="text" id="join-code-input" class="glass-input" placeholder="Enter 6-digit Code"
-                    style="text-align:center; font-weight:bold; letter-spacing:2px;">
+                <input type="text" id="join-code-input" class="glass-input" placeholder="Enter 6-digit Code" style="text-align:center; font-weight:bold; letter-spacing:2px;">
                 <button class="btn-ios" style="width:100%" onclick="handleJoinTrip()">Join Now</button>
             </div>
         </section>
@@ -1073,14 +1172,12 @@
             </div>
 
             <div class="glass-panel">
-                <div
-                    style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center; flex-wrap:wrap; gap:10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center; flex-wrap:wrap; gap:10px;">
                     <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
                         <h3 style="margin: 0;">🗓️ Itinerary</h3>
                     </div>
                     <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <button class="btn-ios" style="padding:8px 20px; width:auto;" onclick="addDayToTrip()">+ Add
-                            Day</button>
+                        <button class="btn-ios" style="padding:8px 20px; width:auto;" onclick="addDayToTrip()">+ Add Day</button>
                     </div>
                 </div>
 
@@ -1088,23 +1185,18 @@
 
                 <div class="summary-box">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <div
-                            style="height: 3px; flex: 1; background: linear-gradient(to right, transparent, rgba(0,0,0,0.1), transparent); border-radius: 2px;">
-                        </div>
-                        <h3 style="margin: 0; color: var(--accent-gray); font-size: 1.2rem;">📊 Analytics</h3>
-                        <div
-                            style="height: 3px; flex: 1; background: linear-gradient(to right, transparent, rgba(0,0,0,0.1), transparent); border-radius: 2px;">
-                        </div>
+                        <div style="height: 3px; flex: 1; background: linear-gradient(to right, transparent, rgba(0,0,0,0.1), transparent); border-radius: 2px;"></div>
+                        <h3 style="margin: 0; color: var(--text-muted); font-size: 1.2rem;">📊 Analytics</h3>
+                        <div style="height: 3px; flex: 1; background: linear-gradient(to right, transparent, rgba(0,0,0,0.1), transparent); border-radius: 2px;"></div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
                         <div>
-                            <div style="font-size:0.9rem; color:var(--accent-gray);">Total Spent</div>
+                            <div style="font-size:0.9rem; color:var(--text-muted);">Total Spent</div>
                             <div style="font-size:1.8rem; font-weight:800;" id="planner-total">₹0</div>
                         </div>
                         <div>
-                            <div style="font-size:0.9rem; color:var(--accent-gray);">Per Person</div>
-                            <div style="font-size:1.8rem; font-weight:800; color:var(--secondary-black);"
-                                id="planner-per-person">₹0</div>
+                            <div style="font-size:0.9rem; color:var(--text-muted);">Per Person</div>
+                            <div style="font-size:1.8rem; font-weight:800; color:var(--orange-solid);" id="planner-per-person">₹0</div>
                         </div>
                     </div>
 
@@ -1119,7 +1211,7 @@
                     </div>
 
                     <div style="margin-top:20px; border-top:1px dashed #ccc; padding-top:15px;">
-                        <h4 style="color:var(--text-primary); margin-bottom:10px; font-weight:600;">Settlements</h4>
+                        <h4 style="color:var(--text-main); margin-bottom:10px; font-weight:600;">Settlements</h4>
                         <div id="planner-settlements"></div>
                     </div>
                 </div>
@@ -1143,7 +1235,7 @@
         <div class="modal-content">
             <div class="modal-icon">🎉</div>
             <div class="modal-title">Invite Friends</div>
-
+            
             <div class="invite-code-display">
                 <div class="invite-code-label">Your Trip Code</div>
                 <div class="invite-code-value" id="invite-code-display">------</div>
@@ -1154,13 +1246,11 @@
 
             <div class="invite-note">
                 <strong>📌 How it works:</strong>
-                Share this code with your trip members so they can join and help distribute the budget. Everyone in the
-                trip can add expenses and track spending together!
+                Share this code with your trip members so they can join and help distribute the budget. Everyone in the trip can add expenses and track spending together!
             </div>
 
             <div class="modal-actions" style="margin-top:20px;">
-                <button class="modal-btn modal-btn-cancel" onclick="closeInviteModal()"
-                    style="flex:none; width:100%;">Close</button>
+                <button class="modal-btn modal-btn-cancel" onclick="closeInviteModal()" style="flex:none; width:100%;">Close</button>
             </div>
         </div>
     </div>
@@ -1169,13 +1259,12 @@
         <div class="modal-content">
             <div class="modal-icon">👥</div>
             <div class="modal-title">Trip Members</div>
-
+            
             <div class="members-list" id="members-list-container">
             </div>
 
             <div class="modal-actions" style="margin-top:20px;">
-                <button class="modal-btn modal-btn-cancel" onclick="closeMembersModal()"
-                    style="flex:none; width:100%;">Close</button>
+                <button class="modal-btn modal-btn-cancel" onclick="closeMembersModal()" style="flex:none; width:100%;">Close</button>
             </div>
         </div>
     </div>
@@ -1195,7 +1284,7 @@
     <script type="module">
         import { auth, db } from "./firebase-config.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-        import {
+        import { 
             collection, addDoc, query, where, onSnapshot, doc, getDoc, updateDoc, arrayUnion, serverTimestamp, orderBy, deleteDoc, getDocs
         } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
@@ -1241,7 +1330,7 @@
         // --- UI TOGGLES ---
         window.toggleDay = (dayNum) => {
             const wrapper = document.getElementById(`day-wrapper-${dayNum}`);
-
+            
             if (expandedDays.has(dayNum)) {
                 expandedDays.delete(dayNum);
                 wrapper.classList.remove('open');
@@ -1257,18 +1346,18 @@
             const modalTitle = document.getElementById('modalTitle');
             const modalMessage = document.getElementById('modalMessage');
             const modalIcon = document.getElementById('modalIcon');
-
+            
             modalTitle.innerText = title;
             modalMessage.innerText = message;
             modalIcon.innerText = icon;
-
+            
             // Store the confirm action
             modalConfirmAction = onConfirm;
-
+            
             modal.classList.add('active');
         }
 
-        window.closeModal = function () {
+        window.closeModal = function() {
             document.getElementById('confirmModal').classList.remove('active');
             // We do not clear modalConfirmAction here immediately, or we will cause errors if the listener runs after
         };
@@ -1277,48 +1366,48 @@
         document.getElementById('modalConfirmBtn').addEventListener('click', () => {
             if (modalConfirmAction) {
                 const actionToRun = modalConfirmAction; // Capture the action
-                closeModal();
+                closeModal(); 
                 modalConfirmAction = null; // Clear it after capturing
                 actionToRun(); // Execute captured action
             }
         });
 
-        window.closeInviteModal = function () {
+        window.closeInviteModal = function() {
             document.getElementById('inviteModal').classList.remove('active');
             const copyBtn = document.getElementById('copy-code-btn');
             copyBtn.classList.remove('copied');
             copyBtn.innerHTML = '<span id="copy-icon">📋</span> Copy Code';
         };
 
-        window.closeMembersModal = function () {
+        window.closeMembersModal = function() {
             document.getElementById('membersModal').classList.remove('active');
         };
 
-        window.showLogoutModal = function () {
+        window.showLogoutModal = function() {
             document.getElementById('logoutModal').classList.add('active');
         };
 
-        window.closeLogoutModal = function () {
+        window.closeLogoutModal = function() {
             document.getElementById('logoutModal').classList.remove('active');
         };
 
-        window.confirmLogout = function () {
+        window.confirmLogout = function() {
             closeLogoutModal();
             signOut(auth);
         };
 
-        window.showInviteModal = function () {
+        window.showInviteModal = function() {
             if (!activeTripData) return;
             const inviteModal = document.getElementById('inviteModal');
             document.getElementById('invite-code-display').innerText = activeTripData.joinCode;
             inviteModal.classList.add('active');
         };
 
-        window.showMembersModal = function () {
+        window.showMembersModal = function() {
             if (!activeTripData) return;
             const membersModal = document.getElementById('membersModal');
             const membersContainer = document.getElementById('members-list-container');
-
+            
             membersContainer.innerHTML = activeTripData.memberNames.map(name => `
                 <div class="member-item">
                     <div class="member-avatar">${name.charAt(0).toUpperCase()}</div>
@@ -1328,11 +1417,11 @@
                     </div>
                 </div>
             `).join('');
-
+            
             membersModal.classList.add('active');
         };
 
-        window.copyInviteCode = async function () {
+        window.copyInviteCode = async function() {
             const code = activeTripData.joinCode;
             const copyBtn = document.getElementById('copy-code-btn');
             try {
@@ -1378,7 +1467,7 @@
         });
 
         window.logout = () => signOut(auth);
-
+        
         // --- UTILITY FUNCTIONS ---
         function formatDate(dateStr) {
             const options = { month: 'short', day: 'numeric', weekday: 'short' };
@@ -1396,8 +1485,8 @@
             const name = document.getElementById('new-trip-name').value;
             const date = document.getElementById('new-trip-date').value;
             const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-
-            if (!name || !date) return alert("Fill all fields!");
+            
+            if(!name || !date) return alert("Fill all fields!");
 
             await addDoc(collection(db, "trips"), {
                 name,
@@ -1408,7 +1497,7 @@
                 dayCount: 1,
                 createdAt: serverTimestamp()
             });
-
+            
             switchView('view-dashboard');
         };
 
@@ -1418,29 +1507,29 @@
                 alert("Please enter a code");
                 return;
             }
-
+            
             const q = query(collection(db, "trips"), where("joinCode", "==", code));
             const snapshot = await getDocs(q);
-
-            if (snapshot.empty) {
+            
+            if(snapshot.empty) {
                 alert("Code not found");
                 return;
             }
-
+            
             const tripDoc = snapshot.docs[0];
             const tripData = tripDoc.data();
-
-            if (tripData.memberUids && tripData.memberUids.includes(userProfile.uid)) {
+            
+            if(tripData.memberUids && tripData.memberUids.includes(userProfile.uid)) {
                 alert("You're already a member of this trip!");
                 switchView('view-dashboard');
                 return;
             }
-
+            
             await updateDoc(doc(db, "trips", tripDoc.id), {
                 memberUids: arrayUnion(userProfile.uid),
                 memberNames: arrayUnion(userProfile.username)
             });
-
+            
             alert("Successfully joined the trip!");
             switchView('view-dashboard');
         };
@@ -1450,18 +1539,38 @@
             onSnapshot(q, (snap) => {
                 const container = document.getElementById('trip-list-container');
                 container.innerHTML = '';
-                snap.forEach(d => {
+                
+                // Use a loop to process docs. We fetch expenses separately for the total.
+                snap.docs.forEach(d => {
                     const data = d.data();
                     const card = document.createElement('div');
                     card.className = 'trip-card';
+                    
+                    // Render basics first
                     card.innerHTML = `
                         <div class="trip-delete-icon" data-trip-id="${d.id}" data-trip-name="${data.name}">×</div>
                         <h3>${data.name}</h3>
                         <p>${formatDate(data.startDate)}</p>
+                        
+                        <div class="trip-card-total">
+                            Total: <span class="total-amount-display" id="total-${d.id}">...</span>
+                        </div>
+
                         <div class="member-dots">
                             ${data.memberNames.map(n => `<div class="dot">${n[0]}</div>`).join('')}
                         </div>
                     `;
+                    
+                    // Fetch total asynchronously and update the span
+                    const expensesRef = collection(db, "trips", d.id, "expenses");
+                    getDocs(expensesRef).then(expenseSnap => {
+                        let total = 0;
+                        expenseSnap.forEach(exp => {
+                            total += (exp.data().amt || 0);
+                        });
+                        const el = document.getElementById(`total-${d.id}`);
+                        if(el) el.innerText = `₹${total}`;
+                    });
 
                     // Add event listener to delete icon
                     const deleteIcon = card.querySelector('.trip-delete-icon');
@@ -1471,14 +1580,14 @@
                         const tripName = e.currentTarget.getAttribute('data-trip-name');
                         promptDeleteTrip(tripId, tripName);
                     });
-
+                    
                     // Add event listener to card body
                     card.addEventListener('click', (e) => {
                         if (!e.target.classList.contains('trip-delete-icon')) {
                             openPlanner(d.id);
                         }
                     });
-
+                    
                     container.appendChild(card);
                 });
             });
@@ -1499,27 +1608,27 @@
                 console.error('No trip ID to delete');
                 return;
             }
-
+            
             console.log('Deleting trip:', idToDelete);
-
+            
             try {
                 // Delete all expenses first
                 const expensesQuery = query(collection(db, "trips", idToDelete, "expenses"));
                 const expensesSnapshot = await getDocs(expensesQuery);
-
+                
                 const deletePromises = expensesSnapshot.docs.map(expDoc => deleteDoc(expDoc.ref));
                 await Promise.all(deletePromises);
-
+                
                 // Delete the trip document
                 await deleteDoc(doc(db, "trips", idToDelete));
-
+                
                 // If we were viewing this trip, go back
-                if (activeTripId === idToDelete) {
+                if(activeTripId === idToDelete) {
                     activeTripId = null;
                     activeTripData = null;
                     switchView('view-dashboard');
                 }
-
+                
             } catch (error) {
                 console.error("Error deleting trip:", error);
                 alert("Failed to delete trip: " + error.message);
@@ -1531,18 +1640,18 @@
             activeTripId = id;
             switchView('view-planner');
             expandedDays = new Set();
-
+            
             onSnapshot(doc(db, "trips", id), (snap) => {
-                if (!snap.exists()) {
+                if(!snap.exists()) {
                     switchView('view-dashboard');
                     return;
                 }
                 activeTripData = snap.data();
                 document.getElementById('planner-title').innerText = activeTripData.name;
-
+                
                 const expQ = query(collection(db, "trips", id, "expenses"), orderBy("createdAt", "asc"));
                 onSnapshot(expQ, (expSnap) => {
-                    renderPlannerContent(expSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+                    renderPlannerContent(expSnap.docs.map(d => ({id: d.id, ...d.data()})));
                 });
             });
         }
@@ -1550,11 +1659,11 @@
         function renderPlannerContent(expenses) {
             const container = document.getElementById('planner-days-container');
             container.innerHTML = '';
-
+            
             let grandTotal = 0;
             let payerTotals = {};
             let catTotals = {};
-
+            
             activeTripData.memberNames.forEach(n => payerTotals[n] = 0);
             CATEGORIES.forEach(c => catTotals[c.id] = 0);
 
@@ -1572,7 +1681,7 @@
                     payerTotals[e.payer] += e.amt;
                     const catInfo = CATEGORIES.find(c => c.id === e.category) || CATEGORIES[5];
                     catTotals[catInfo.id] += e.amt;
-
+                    
                     return `
                         <div class="expense-item">
                             <div class="expense-details">
@@ -1625,7 +1734,7 @@
 
             document.getElementById('planner-total').innerText = `₹${grandTotal}`;
             document.getElementById('planner-per-person').innerText = `₹${Math.round(grandTotal / activeTripData.memberNames.length)}`;
-
+            
             const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
             document.getElementById('planner-cat-breakdown').innerHTML = sortedCats.map(([catId, amt]) => {
                 if (amt === 0) return '';
@@ -1638,7 +1747,7 @@
                             <span>${pct}% (₹${amt.toFixed(0)})</span>
                         </div>
                         <div style="background:#eee; height:6px; border-radius:3px; margin-top:2px;">
-                            <div style="background:var(--primary-black); width:${pct}%; height:100%; border-radius:3px;"></div>
+                            <div style="background:var(--orange-solid); width:${pct}%; height:100%; border-radius:3px;"></div>
                         </div>
                     </div>
                 `;
@@ -1649,13 +1758,13 @@
                     <span>${name}</span> <strong>₹${amt.toFixed(0)}</strong>
                 </div>`
             ).join('');
-
+            
             const settles = calculateSettlements(payerTotals, grandTotal, activeTripData.memberNames);
             const settlementContainer = document.getElementById('planner-settlements');
             if (settles.length > 0) {
                 settlementContainer.innerHTML = settles.map(s => `<div class="settlement-item">${s}</div>`).join('');
             } else {
-                settlementContainer.innerHTML = `<div style="color:var(--text-primary); margin-top:10px; font-weight:600;">✓ All settled up!</div>`;
+                settlementContainer.innerHTML = `<div style="color:var(--text-main); margin-top:10px; font-weight:600;">✓ All settled up!</div>`;
             }
         }
 
@@ -1665,11 +1774,11 @@
             const amt = parseFloat(document.getElementById(`amt-${day}`).value);
             const cat = document.getElementById(`cat-${day}`).value;
             const payer = document.getElementById(`payer-${day}`).value;
-
-            if (!desc || !amt) return;
-
+            
+            if(!desc || !amt) return;
+            
             expandedDays.add(day);
-
+            
             await addDoc(collection(db, "trips", activeTripId, "expenses"), {
                 desc,
                 amt,
@@ -1697,27 +1806,27 @@
 
         window.removeDay = async (dayNumber) => {
             if (!activeTripId || activeTripData.dayCount <= 1) return;
-
+            
             const expensesQuery = query(collection(db, "trips", activeTripId, "expenses"), where("day", "==", dayNumber));
             const expensesSnapshot = await getDocs(expensesQuery);
-
+            
             if (!expensesSnapshot.empty) {
-                showModal('Cannot Remove Day', `Day ${dayNumber} has expenses. Delete them first.`, '⚠️', () => { });
+                showModal('Cannot Remove Day', `Day ${dayNumber} has expenses. Delete them first.`, '⚠️', () => {});
                 return;
             }
-
+            
             showModal('Remove Day', `Remove Day ${dayNumber}?`, '📅', async () => {
                 try {
                     const allExpensesQuery = query(collection(db, "trips", activeTripId, "expenses"));
                     const allExpensesSnapshot = await getDocs(allExpensesQuery);
-
+                    
                     const updatePromises = allExpensesSnapshot.docs
                         .filter(doc => doc.data().day > dayNumber)
                         .map(doc => updateDoc(doc.ref, { day: doc.data().day - 1 }));
-
+                    
                     await Promise.all(updatePromises);
                     await updateDoc(doc(db, "trips", activeTripId), { dayCount: activeTripData.dayCount - 1 });
-
+                    
                 } catch (error) {
                     console.error("Error removing day:", error);
                 }
@@ -1728,21 +1837,20 @@
             if (total === 0 || travelers.length === 0) return [];
             const avg = total / travelers.length;
             let bal = travelers.map(t => ({ name: t, amt: (payerTotals[t] || 0) - avg }));
-            let debtors = bal.filter(x => x.amt < -0.1).sort((a, b) => a.amt - b.amt);
-            let creditors = bal.filter(x => x.amt > 0.1).sort((a, b) => b.amt - a.amt);
+            let debtors = bal.filter(x => x.amt < -0.1).sort((a,b) => a.amt - b.amt);
+            let creditors = bal.filter(x => x.amt > 0.1).sort((a,b) => b.amt - a.amt);
             let results = [];
             let i = 0, j = 0;
-            while (i < debtors.length && j < creditors.length) {
+            while(i < debtors.length && j < creditors.length) {
                 let pay = Math.min(Math.abs(debtors[i].amt), creditors[j].amt);
                 results.push(`${debtors[i].name} owes ${creditors[j].name} ₹${Math.round(pay)}`);
                 debtors[i].amt += pay;
                 creditors[j].amt -= pay;
-                if (Math.abs(debtors[i].amt) < 0.1) i++;
-                if (creditors[j].amt < 0.1) j++;
+                if(Math.abs(debtors[i].amt) < 0.1) i++;
+                if(creditors[j].amt < 0.1) j++;
             }
             return results;
         }
     </script>
 </body>
-
 </html>
